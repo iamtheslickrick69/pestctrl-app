@@ -27,16 +27,16 @@ interface SidebarProps {
   onToggle: () => void
 }
 
-export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export default function Sidebar({ collapsed }: SidebarProps) {
   const pathname = usePathname()
 
   if (collapsed) return null
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-[240px] bg-sidebar border-r border-sidebar-border z-40 flex flex-col">
+    <aside className="fixed left-0 top-0 h-full w-[240px] bg-sidebar/95 backdrop-blur-sm border-r border-sidebar-border z-40 flex flex-col">
       {/* Logo */}
-      <div className="h-14 flex items-center px-4 border-b border-sidebar-border">
-        <Link href="/" className="flex items-center space-x-2">
+      <div className="h-14 flex items-center px-4 border-b border-sidebar-border/50">
+        <Link href="/landing" className="flex items-center space-x-2">
           <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
             <Bug className="w-4 h-4 text-primary-foreground" />
           </div>

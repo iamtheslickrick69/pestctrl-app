@@ -1,31 +1,17 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowRight, MessageSquare, Phone, DollarSign, Users, TrendingUp, Target, Check, Zap } from 'lucide-react'
+import { ArrowRight, DollarSign, Users, TrendingUp, Target, Check, Zap } from 'lucide-react'
 import Link from 'next/link'
+import { AnimatedBackground } from '@/components/ui/AnimatedBackground'
+import { InteractiveiPhoneDemo } from '@/components/demo/InteractiveiPhoneDemo'
 
 export default function LandingPage() {
-  const [demoMode, setDemoMode] = useState<'sms' | 'voice'>('sms')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [message, setMessage] = useState('')
-  const [conversation, setConversation] = useState<Array<{ role: 'user' | 'ai', text: string }>>([])
-
-  const handleSendSMS = () => {
-    if (!message.trim()) return
-
-    setConversation([
-      ...conversation,
-      { role: 'user', text: message },
-      {
-        role: 'ai',
-        text: "Hi! Thanks for reaching out. I noticed you haven't upgraded to our premium mosquito protection yet. With summer coming, I can add it to your service for just $39/month. Would you like me to schedule that?"
-      }
-    ])
-    setMessage('')
-  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Animated Background */}
+      <AnimatedBackground />
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
@@ -53,7 +39,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-32 pb-20 px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-muted text-sm text-muted-foreground mb-8">
             <span className="w-1.5 h-1.5 bg-primary rounded-full" />
@@ -104,144 +90,23 @@ export default function LandingPage() {
       </section>
 
       {/* Interactive Demo Section */}
-      <section id="demo" className="py-20 px-6 bg-muted/30">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-medium text-foreground mb-3">
+      <section id="demo" className="py-20 px-6 bg-muted/30 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-medium text-foreground mb-3">
               See it in action
             </h2>
             <p className="text-lg text-muted-foreground">
-              Try our AI right now. Send a text or make a call.
+              Try our AI right now. Fully interactive iPhone demo.
             </p>
           </div>
 
-          {/* Demo Mode Selector */}
-          <div className="flex items-center justify-center space-x-2 mb-8">
-            <button
-              onClick={() => setDemoMode('sms')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                demoMode === 'sms'
-                  ? 'bg-primary text-background'
-                  : 'bg-background text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <MessageSquare className="w-4 h-4 inline-block mr-2" />
-              SMS Demo
-            </button>
-            <button
-              onClick={() => setDemoMode('voice')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                demoMode === 'voice'
-                  ? 'bg-primary text-background'
-                  : 'bg-background text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Phone className="w-4 h-4 inline-block mr-2" />
-              Voice Demo
-            </button>
-          </div>
-
-          {/* SMS Demo */}
-          {demoMode === 'sms' && (
-            <div className="bg-background rounded-lg border border-border p-6 max-w-2xl mx-auto">
-              <div className="mb-4">
-                <label className="block text-sm text-muted-foreground mb-2">
-                  Your phone number (demo only)
-                </label>
-                <input
-                  type="tel"
-                  placeholder="(555) 123-4567"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              {/* Conversation */}
-              <div className="h-[300px] overflow-y-auto mb-4 space-y-3">
-                {conversation.length === 0 ? (
-                  <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                    Start a conversation to see the AI in action
-                  </div>
-                ) : (
-                  conversation.map((msg, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-[80%] px-4 py-2 rounded-lg ${
-                          msg.role === 'user'
-                            ? 'bg-primary text-background'
-                            : 'bg-muted text-foreground'
-                        }`}
-                      >
-                        <p className="text-sm">{msg.text}</p>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Input */}
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  placeholder="Type your message..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendSMS()}
-                  className="flex-1 px-3 py-2 rounded-md bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <button
-                  onClick={handleSendSMS}
-                  className="px-4 py-2 rounded-md bg-primary text-background font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Send
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Voice Demo */}
-          {demoMode === 'voice' && (
-            <div className="bg-background rounded-lg border border-border p-12 max-w-2xl mx-auto text-center">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                <Phone className="w-10 h-10 text-primary" />
-              </div>
-
-              <h3 className="text-xl font-medium text-foreground mb-2">
-                Call our AI voice agent
-              </h3>
-              <p className="text-muted-foreground mb-8">
-                Experience natural conversation with our voice AI
-              </p>
-
-              <div className="space-y-4">
-                <a
-                  href="tel:+12272334997"
-                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-md bg-primary text-background font-medium hover:bg-primary/90 transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>+1 (227) 233-4997</span>
-                </a>
-
-                <p className="text-sm text-muted-foreground">
-                  Or use the browser demo below
-                </p>
-
-                <button className="w-full px-6 py-3 rounded-md border border-border text-foreground font-medium hover:bg-accent transition-colors">
-                  Start Browser Call
-                  <span className="block text-xs text-muted-foreground mt-1">Uses your microphone</span>
-                </button>
-              </div>
-            </div>
-          )}
+          <InteractiveiPhoneDemo />
         </div>
       </section>
 
       {/* Four Revenue Streams */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-medium text-foreground mb-3">
@@ -300,7 +165,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-6 bg-muted/30">
+      <section id="pricing" className="py-20 px-6 bg-muted/30 relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-medium text-foreground mb-3">
@@ -406,7 +271,7 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-medium text-foreground mb-4">
             Deploy today. Earn tomorrow.
@@ -428,7 +293,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 px-6">
+      <footer className="border-t border-border py-8 px-6 relative z-10">
         <div className="max-w-5xl mx-auto flex items-center justify-between text-sm text-muted-foreground">
           <div>© 2024 PestCtrl.ai. All rights reserved.</div>
           <div className="flex items-center space-x-6">
