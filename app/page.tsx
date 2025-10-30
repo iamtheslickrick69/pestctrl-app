@@ -42,7 +42,22 @@ export default function HomePage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      {/* Animated Video Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.03]"
+        >
+          <source src="/newicon.mp4" type="video/mp4" />
+        </video>
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90" />
+      </div>
+
+      <div className="relative z-10 space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-2xl font-medium text-foreground">

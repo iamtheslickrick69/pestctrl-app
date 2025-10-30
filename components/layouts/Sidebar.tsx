@@ -40,8 +40,8 @@ export default function Sidebar({ collapsed }: SidebarProps) {
           <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
             <Bug className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="text-base font-medium text-sidebar-foreground">
-            PestCtrl
+          <span className="text-base font-black tracking-tighter text-sidebar-foreground uppercase" style={{ fontFamily: '"Inter Black", -apple-system, sans-serif', letterSpacing: '-0.05em' }}>
+            PestCTRL<span className="lowercase text-primary">.ai</span>
           </span>
         </Link>
       </div>

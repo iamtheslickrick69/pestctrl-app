@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PestCtrl.ai - AI-Powered Revenue Platform",
+  title: "PestCTRL.ai - AI-Powered Revenue Platform",
   description: "Executive platform for AI-driven revenue generation through intelligent automation.",
 };
 

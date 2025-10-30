@@ -11,105 +11,142 @@ interface Message {
 }
 
 export function IOSMessagesInterface() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: "Hi! I'm Anna from PestCtrl. I noticed you haven't scheduled your quarterly treatment. We have an opening this Thursday at 2pm. Would that work for you?",
-      sender: 'ai',
-      timestamp: new Date(Date.now() - 300000)
-    },
-    {
-      id: '2',
-      text: "Thursday works! What time again?",
-      sender: 'user',
-      timestamp: new Date(Date.now() - 240000)
-    },
-    {
-      id: '3',
-      text: "Perfect! 2pm on Thursday. Our technician will text you 30 minutes before arrival. Also, with mosquito season starting, would you like to add our mosquito barrier treatment? It's just $39/month and you'll see 90% fewer mosquitoes!",
-      sender: 'ai',
-      timestamp: new Date(Date.now() - 180000)
-    },
-    {
-      id: '4',
-      text: "How much is my regular service?",
-      sender: 'user',
-      timestamp: new Date(Date.now() - 120000)
-    },
-    {
-      id: '5',
-      text: "Your quarterly treatment is $89, same as always. With the mosquito barrier, your total would be $128/month. Most customers tell us the mosquito treatment pays for itself - no more expensive bug spray that doesn't even work!",
-      sender: 'ai',
-      timestamp: new Date(Date.now() - 60000)
-    }
-  ])
+  const [messages, setMessages] = useState<Message[]>([])
+  const [conversationStarted, setConversationStarted] = useState(false)
   const [inputText, setInputText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  const startConversation = async () => {
+    setConversationStarted(true)
+    setIsTyping(true)
+
+    try {
+      // Use REAL AI engine via API - John Smith (Upsell demo customer)
+      const response = await fetch('/api/sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: '+15551234567', // John Smith - upsell demo
+          message: 'START_UPSELL'
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.messages && data.messages.length > 0) {
+        // Get the AI's first message
+        const aiMessages = data.messages.filter((m: any) => m.sender === 'ai')
+        if (aiMessages.length > 0) {
+          const lastAiMessage = aiMessages[aiMessages.length - 1]
+          const firstMessage: Message = {
+            id: lastAiMessage.id,
+            text: lastAiMessage.text,
+            sender: 'ai',
+            timestamp: new Date(lastAiMessage.timestamp)
+          }
+          setMessages([firstMessage])
+        }
+      }
+    } catch (error) {
+      console.error('Failed to start conversation:', error)
+      // Fallback message
+      const firstMessage: Message = {
+        id: '1',
+        text: "Hi! I'm Anna from PestCtrl. I noticed you haven't scheduled your quarterly treatment. We have an opening this Thursday at 2pm. Would that work for you?",
+        sender: 'ai',
+        timestamp: new Date()
+      }
+      setMessages([firstMessage])
+    } finally {
+      setIsTyping(false)
+    }
+  }
+
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
   }
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputText.trim()) return
 
-    // Add user message
+    const messageToSend = inputText
+    setInputText('')
+
+    // Add user message immediately
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputText,
+      text: messageToSend,
       sender: 'user',
       timestamp: new Date()
     }
     setMessages(prev => [...prev, userMessage])
-    setInputText('')
 
-    // Simulate AI typing and response
+    // Show typing indicator
     setIsTyping(true)
-    setTimeout(() => {
-      setIsTyping(false)
 
-      // AI responses based on context
-      let aiResponse = "Great! I've scheduled your treatment for Thursday at 2pm. Our technician will text you 30 minutes before arrival. Is there anything specific you'd like us to focus on?"
+    try {
+      // Use REAL AI engine via API - John Smith (Upsell demo customer)
+      const response = await fetch('/api/sms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: '+15551234567', // John Smith - upsell demo
+          message: messageToSend
+        })
+      })
 
-      if (inputText.toLowerCase().includes('price') || inputText.toLowerCase().includes('cost')) {
-        aiResponse = "Your quarterly treatment is $89, same as always. We also have a special on mosquito barrier treatment - add it for just $39. Would you like to include that?"
-      } else if (inputText.toLowerCase().includes('mosquito')) {
-        aiResponse = "Perfect! I've added mosquito barrier treatment to your Thursday appointment. Your new total is $128. You'll love the results - most customers see 90% fewer mosquitoes!"
-      } else if (inputText.toLowerCase().includes('cancel') || inputText.toLowerCase().includes('no thanks')) {
-        aiResponse = "I understand! No problem at all. When would be a better time for you? I have openings next week on Monday, Wednesday, and Friday."
+      const data = await response.json()
+
+      if (data.success && data.messages && data.messages.length > 0) {
+        // Get the latest AI message
+        const aiMessages = data.messages.filter((m: any) => m.sender === 'ai')
+        if (aiMessages.length > 0) {
+          const lastAiMessage = aiMessages[aiMessages.length - 1]
+          const aiMessage: Message = {
+            id: lastAiMessage.id,
+            text: lastAiMessage.text,
+            sender: 'ai',
+            timestamp: new Date(lastAiMessage.timestamp)
+          }
+          setMessages(prev => [...prev, aiMessage])
+        }
       }
-
+    } catch (error) {
+      console.error('Failed to send message:', error)
+      // Fallback response
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: aiResponse,
+        text: "I understand! Let me help you with that. Could you tell me more about what you're looking for?",
         sender: 'ai',
         timestamp: new Date()
       }
       setMessages(prev => [...prev, aiMessage])
-    }, 1500 + Math.random() * 1000)
+    } finally {
+      setIsTyping(false)
+    }
   }
 
   return (
     <div className="w-full h-full flex flex-col bg-white dark:bg-black" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif' }}>
-      {/* Status bar */}
-      <div className="h-[54px] bg-[#f6f6f6] flex items-center justify-between px-6 pt-3">
+      {/* Status bar - accounts for Dynamic Island */}
+      <div className="h-[59px] bg-[#f6f6f6] flex items-end justify-between px-6 pb-2">
         <div className="text-[15px] font-semibold text-black">9:41</div>
         <div className="flex items-center space-x-1">
-          <svg width="18" height="12" viewBox="0 0 18 12" className="dark:fill-white">
+          <svg width="18" height="12" viewBox="0 0 18 12" className="fill-black">
             <path d="M0 0h4v12H0zM6 2h4v10H6zM12 4h4v8h-4z" opacity="0.4"/>
             <path d="M0 0h4v12H0zM6 2h4v10H6z"/>
           </svg>
-          <svg width="16" height="12" viewBox="0 0 16 12" className="dark:fill-white ml-1">
+          <svg width="16" height="12" viewBox="0 0 16 12" className="fill-black ml-1">
             <path d="M14.5 2c.8 0 1.5.7 1.5 1.5v5c0 .8-.7 1.5-1.5 1.5h-13C.7 10 0 9.3 0 8.5v-5C0 2.7.7 2 1.5 2h13zM1 3v6h13V3H1z"/>
             <rect x="1.5" y="3.5" width="11" height="5" rx="0.5"/>
           </svg>
-          <div className="w-[27px] h-[13px] border-2 border-black dark:border-white rounded-[4px] flex items-center justify-end pr-[2px] ml-1">
-            <div className="w-[18px] h-[9px] bg-black dark:bg-white rounded-[2px]" />
+          <div className="w-[27px] h-[13px] border-2 border-black rounded-[4px] flex items-center justify-end pr-[2px] ml-1">
+            <div className="w-[18px] h-[9px] bg-black rounded-[2px]" />
           </div>
         </div>
       </div>
@@ -129,16 +166,33 @@ export function IOSMessagesInterface() {
       </div>
 
       {/* Messages area - Scrollable INSIDE the phone */}
-      <div className="flex-1 bg-white overflow-y-auto overflow-x-hidden px-4 py-3" style={{
-        maxHeight: 'calc(100% - 142px)', // Account for header + status + input areas
-        scrollbarWidth: 'none', // Firefox
-        msOverflowStyle: 'none', // IE/Edge
-      }}>
+      <div
+        className="flex-1 bg-white overflow-y-auto overflow-x-hidden px-4 py-3"
+        style={{
+          maxHeight: 'calc(100% - 147px)', // Account for header (59+44) + input area (44)
+          minHeight: 'calc(100% - 147px)',
+          scrollbarWidth: 'none', // Firefox
+          msOverflowStyle: 'none', // IE/Edge
+          overscrollBehavior: 'contain', // Prevent parent scroll
+        }}
+      >
         <style jsx>{`
           div::-webkit-scrollbar {
             display: none; /* Chrome/Safari/Opera */
           }
         `}</style>
+
+        {/* Show "Begin Demo" button when conversation hasn't started */}
+        {!conversationStarted && messages.length === 0 && !isTyping && (
+          <div className="flex items-center justify-center h-full">
+            <button
+              onClick={startConversation}
+              className="px-8 py-4 bg-[#007AFF] text-white font-semibold text-[17px] rounded-full shadow-lg hover:bg-[#0051D5] transition-all duration-300 active:scale-95"
+            >
+              Begin Demo
+            </button>
+          </div>
+        )}
 
         {messages.map((message, index) => (
           <div
@@ -184,8 +238,9 @@ export function IOSMessagesInterface() {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Text Message"
-            className="flex-1 bg-transparent text-[17px] text-black placeholder-[#8e8e93] outline-none py-2"
+            placeholder={conversationStarted ? "Text Message" : "Click 'Begin Demo' to start"}
+            disabled={!conversationStarted}
+            className="flex-1 bg-transparent text-[17px] text-black placeholder-[#8e8e93] outline-none py-2 disabled:opacity-50"
             style={{ letterSpacing: '-0.41px' }}
           />
           {inputText.trim() ? (

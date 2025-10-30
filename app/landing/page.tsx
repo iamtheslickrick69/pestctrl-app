@@ -1,11 +1,15 @@
 'use client'
 
-import { ArrowRight, DollarSign, Users, TrendingUp, Target, Check, Zap } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, DollarSign, Users, TrendingUp, Target, Check } from 'lucide-react'
 import Link from 'next/link'
 import { AnimatedBackground } from '@/components/ui/AnimatedBackground'
-import { InteractiveiPhoneDemo } from '@/components/demo/InteractiveiPhoneDemo'
+import { DemoModal } from '@/components/demo/DemoModal'
+import { Logo } from '@/components/ui/Logo'
+import { LoopingOrb } from '@/components/ui/LoopingOrb'
 
 export default function LandingPage() {
+  const [isDemoOpen, setIsDemoOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -13,24 +17,30 @@ export default function LandingPage() {
       <AnimatedBackground />
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
-              <Zap className="w-4 h-4 text-background" />
-            </div>
-            <span className="text-base font-medium">PestCtrl.ai</span>
-          </div>
-          <div className="flex items-center space-x-6">
-            <a href="#demo" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center pt-4">
+        <div className="inline-flex items-center space-x-6 px-6 py-3 rounded-full bg-background/60 backdrop-blur-xl border border-border/40 shadow-lg shadow-black/5">
+          {/* Logo */}
+          <Link href="/landing" className="flex items-center space-x-2.5">
+            <Logo size={28} showGlow={true} />
+            <span className="text-lg font-black tracking-tighter bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent uppercase" style={{ fontFamily: '"Inter Black", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif', letterSpacing: '-0.05em' }}>
+              PestCTRL<span className="lowercase text-primary">.ai</span>
+            </span>
+          </Link>
+
+          {/* Divider */}
+          <div className="h-6 w-px bg-border/50" />
+
+          {/* Nav Links */}
+          <div className="flex items-center space-x-1">
+            <button onClick={() => setIsDemoOpen(true)} className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-full transition-colors">
               Demo
-            </a>
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            </button>
+            <a href="#pricing" className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-full transition-colors">
               Pricing
             </a>
             <Link
               href="/"
-              className="text-sm font-medium px-4 py-2 rounded-md bg-primary text-background hover:bg-primary/90 transition-colors"
+              className="ml-2 px-4 py-1.5 text-sm font-medium rounded-full bg-primary text-background hover:bg-primary/90 transition-all hover:shadow-md"
             >
               Dashboard
             </Link>
@@ -46,9 +56,12 @@ export default function LandingPage() {
             <span>Same-day deployment • 25% commission vs 45%</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-medium text-foreground mb-6 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-medium text-foreground mb-8 tracking-tight">
             AI that makes your pest control business money
           </h1>
+
+          {/* Circular Animated Icon - Seamless Loop */}
+          <LoopingOrb size={160} className="mb-10" />
 
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
             Automate upsells, win-backs, collections, and retention.
@@ -56,13 +69,13 @@ export default function LandingPage() {
           </p>
 
           <div className="flex items-center justify-center space-x-4">
-            <a
-              href="#demo"
+            <button
+              onClick={() => setIsDemoOpen(true)}
               className="inline-flex items-center space-x-2 px-6 py-3 rounded-md bg-primary text-background font-medium hover:bg-primary/90 transition-colors"
             >
               <span>Try the demo</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
             <a
               href="#pricing"
               className="inline-flex items-center space-x-2 px-6 py-3 rounded-md border border-border text-foreground font-medium hover:bg-accent transition-colors"
@@ -89,30 +102,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Interactive Demo Section */}
-      <section id="demo" className="py-20 px-6 bg-muted/30 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-medium text-foreground mb-3">
-              See it in action
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Try our AI right now. Fully interactive iPhone demo.
-            </p>
-          </div>
-
-          <InteractiveiPhoneDemo />
-        </div>
-      </section>
 
       {/* Four Revenue Streams */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-20 px-6 relative overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/background.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-medium text-foreground mb-3">
+            <h2 className="text-3xl font-medium text-white mb-3 drop-shadow-lg">
               Four ways we make you money
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/90 drop-shadow-md">
               Every conversation is designed to generate or protect revenue
             </p>
           </div>
@@ -165,13 +178,28 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-6 bg-muted/30 relative z-10">
-        <div className="max-w-5xl mx-auto">
+      <section id="pricing" className="py-20 px-6 relative overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/pricing-background.mov" type="video/mp4" />
+          </video>
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-medium text-foreground mb-3">
+            <h2 className="text-3xl font-medium text-white mb-3 drop-shadow-lg">
               Simple, performance-based pricing
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-white/90 drop-shadow-md">
               Pay only when we generate revenue. No setup fees, no monthly minimums.
             </p>
           </div>
@@ -285,8 +313,8 @@ export default function LandingPage() {
               <span>Start free trial</span>
               <ArrowRight className="w-4 h-4" />
             </button>
-            <button className="inline-flex items-center space-x-2 px-6 py-3 rounded-md border border-border text-foreground font-medium hover:bg-accent transition-colors">
-              <span>Schedule demo</span>
+            <button onClick={() => setIsDemoOpen(true)} className="inline-flex items-center space-x-2 px-6 py-3 rounded-md border border-border text-foreground font-medium hover:bg-accent transition-colors">
+              <span>See demo</span>
             </button>
           </div>
         </div>
@@ -295,7 +323,13 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border py-8 px-6 relative z-10">
         <div className="max-w-5xl mx-auto flex items-center justify-between text-sm text-muted-foreground">
-          <div>© 2024 PestCtrl.ai. All rights reserved.</div>
+          <div className="flex items-center">
+            <span>© 2024</span>
+            <span className="ml-1.5 font-black tracking-tighter uppercase" style={{ fontFamily: '"Inter Black", sans-serif', letterSpacing: '-0.03em' }}>
+              PestCTRL<span className="lowercase text-primary">.ai</span>
+            </span>
+            <span className="ml-1.5">All rights reserved.</span>
+          </div>
           <div className="flex items-center space-x-6">
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
             <a href="#" className="hover:text-foreground transition-colors">Terms</a>
@@ -303,6 +337,9 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Demo Modal */}
+      <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
     </div>
   )
 }

@@ -6,7 +6,7 @@ interface iPhone16ProFrameProps {
 
 export function IPhone16ProFrame({ children }: iPhone16ProFrameProps) {
   return (
-    <div className="relative mx-auto" style={{ width: '393px', height: '852px' }}>
+    <div className="relative mx-auto" style={{ width: '393px', height: '852px', overscrollBehavior: 'contain' }}>
       {/* iPhone 16 Pro Frame - Accurate Dimensions */}
       <div className="absolute inset-0 rounded-[60px] bg-[#1d1d1f] shadow-[0_0_0_14px_#1d1d1f,0_0_60px_rgba(0,0,0,0.5)] overflow-hidden">
         {/* Screen bezel */}
@@ -14,8 +14,8 @@ export function IPhone16ProFrame({ children }: iPhone16ProFrameProps) {
           {/* Dynamic Island */}
           <div className="absolute top-[20px] left-1/2 -translate-x-1/2 w-[126px] h-[37px] bg-black rounded-[19px] z-50" />
 
-          {/* Screen content */}
-          <div className="relative w-full h-full bg-white dark:bg-black">
+          {/* Screen content - Prevent scroll propagation */}
+          <div className="relative w-full h-full bg-white dark:bg-black overflow-hidden" style={{ overscrollBehavior: 'contain' }}>
             {children}
           </div>
         </div>

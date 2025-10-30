@@ -19,33 +19,33 @@ export class SalesBotEngine {
     const lowerMessage = message.toLowerCase()
     const firstName = customer.name.split(' ')[0]
 
-    // Initial outreach - more persuasive with urgency and social proof
+    // Initial outreach - natural and helpful tone
     if (!message || message === 'START_UPSELL') {
-      return `Hi ${firstName}! Anna from PestCtrl here. Quick heads up - we're booking mosquito treatments for your area this week. ${customer.notes.includes('backyard') ? 'With your large backyard, you\'d LOVE the results' : 'Perfect timing for spring'}! 90% fewer mosquitos guaranteed. 15 neighbors on your street already signed up. Only $39/month. Want me to add it to Thursday's visit?`
+      return `Hi ${firstName}! It's Anna from PestCtrl. I noticed you haven't scheduled your quarterly treatment yet. ${customer.notes.includes('backyard') ? 'With your backyard, have you thought about adding mosquito control?' : 'Would you be interested in adding mosquito barrier treatment?'} It's $39/month and we can do it during your next visit. Interested?`
     }
 
-    // Positive responses - reinforce decision with specifics
+    // Positive responses - confirm and provide details
     if (lowerMessage.includes('yes') || lowerMessage.includes('sure') || lowerMessage.includes('interested') || lowerMessage.includes('add it')) {
-      return `Excellent choice, ${firstName}! I'm adding mosquito barrier ($39/mo) to your account. Your new total is $${customer.monthlyValue + 39}/month. We'll handle it during your next visit on ${customer.nextService}. You'll notice results within 24 hours. Most customers tell us their backyard became usable again! 🎉`
+      return `Perfect! I'll add mosquito barrier to your account at $39/month. Your new total will be $${customer.monthlyValue + 39}/month. We'll take care of it during your visit on ${customer.nextService}. You should see results within 24 hours.`
     }
 
-    // Price questions - frame as savings/value
+    // Price questions - straightforward value
     if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('how much')) {
-      return `Just $39/month - that's only $1.30/day for a mosquito-free yard! Your total would be $${customer.monthlyValue + 39}/month (currently $${customer.monthlyValue}). Here's the thing: most customers spend $50-80 on bug spray that doesn't even work. This actually solves the problem. Plus, we guarantee results or your money back! Worth trying?`
+      return `It's $39/month, which brings your total to $${customer.monthlyValue + 39}/month (currently $${customer.monthlyValue}). It includes barrier treatment around your property perimeter and breeding areas. We guarantee results or we'll re-treat at no charge. Would you like to try it?`
     }
 
-    // Effectiveness questions - specific data + guarantee
+    // Effectiveness questions - honest and detailed
     if (lowerMessage.includes('effective') || lowerMessage.includes('work') || lowerMessage.includes('results') || lowerMessage.includes('how does')) {
-      return `Great question! Our barrier treatment kills 90% of mosquitos on contact and keeps working for 3 weeks. We spray your property perimeter, breeding areas, and under decks/porches. It's pet and kid-safe once dry (about 30 minutes). Plus we guarantee it - if you're not thrilled, we'll refund it or re-treat free. Can't lose! Should I add it to your ${customer.nextService} appointment?`
+      return `We spray a barrier treatment around your property that targets mosquitoes at rest. It's effective for about 3 weeks and safe for pets and kids once dry. Most customers see a significant reduction in mosquitoes. If you're not satisfied, we'll re-treat or refund it. Want to add it to your next service?`
     }
 
-    // Objections - soft close with scarcity
+    // Objections - respectful exit
     if (lowerMessage.includes('no') || lowerMessage.includes('not interested') || lowerMessage.includes('maybe later')) {
-      return `Totally understand, ${firstName}! Just so you know, we're fully booked by mid-May usually, so if you change your mind, text me ASAP to secure a spot. I'll keep your file flagged. Enjoy your day! 😊`
+      return `No problem, ${firstName}! If you change your mind later just let me know. Have a great day!`
     }
 
-    // Default - reframe with urgency
-    return `I get it! Here's the thing though - we only have 3 slots left this week for your area, and summer is when mosquitos get BAD. $39/month is less than dinner out, and your whole family benefits. Want to lock in a spot before we're booked?`
+    // Default - clarifying question
+    return `I understand. Is there anything specific you'd like to know about the mosquito treatment? Or would you prefer to stick with just your regular service for now?`
   }
 
   // Revenue Stream 2: Win-Back Lost Customers
@@ -94,34 +94,34 @@ export class SalesBotEngine {
 
     // Initial outreach - friendly, assume best intent
     if (!message || message === 'START_COLLECTIONS') {
-      return `Hi ${firstName}! Quick heads-up from PestCtrl - your $${customer.balance} payment didn't process (probably just an expired card?). No worries! Want me to send you a secure link to update it? Takes 30 seconds, then you're all set. Or I can try the card again if you'd prefer? 💳`
+      return `Hi ${firstName}, this is Anna from PestCtrl. Your payment of $${customer.balance} didn't go through - it might be an expired card. Would you like me to send you a secure link to update your payment info?`
     }
 
     // Wants to pay
     if (lowerMessage.includes('yes') || lowerMessage.includes('update') || lowerMessage.includes('new card') || lowerMessage.includes('send') || lowerMessage.includes('link')) {
-      return `Perfect, ${firstName}! Sending you the secure link now. Just click it, update your card (30 seconds max), and I'll process the $${customer.balance} automatically. Your service continues without interruption and you're all caught up! Easy peasy. 🔒`
+      return `Great, I'll send you the secure link right now. Once you update your card info, I'll process the $${customer.balance} payment and you'll be all set. Your service will continue as normal.`
     }
 
     // Financial difficulty - empathetic and solution-focused
     if (lowerMessage.includes('can\'t') || lowerMessage.includes('tight') || lowerMessage.includes('money') || lowerMessage.includes('difficult') || lowerMessage.includes('afford')) {
       const halfPayment = Math.floor(customer.balance / 2)
-      return `${firstName}, I totally get it - life happens! Here's what I can do: Split it in two payments of $${halfPayment}. I'll process the first half now, second half on the 15th. Your service stays active, no late fees, no stress. Fair? I've done this for tons of customers - no judgment! 😊`
+      return `I understand, ${firstName}. I can split this into two payments of $${halfPayment} each. Would that work better for you? I can process the first payment now and schedule the second for the 15th.`
     }
 
-    // Card issue - make it super easy
+    // Card issue - make it easy
     if (lowerMessage.includes('expired') || lowerMessage.includes('card') || lowerMessage.includes('declined') || lowerMessage.includes('try again')) {
-      return `No problem, ${firstName} - happens all the time! I'll send you a secure link to update your payment info. Takes literally 30 seconds. Or want me to just try the card again? Sometimes it works the second time. Either way, super easy fix! Which do you prefer?`
+      return `No problem - that happens. I can either send you a link to update your card, or I can try running it again. Which would you prefer?`
     }
 
     // Questioning charge - transparent breakdown
     if (lowerMessage.includes('why') || lowerMessage.includes('charge') || lowerMessage.includes('what for') || lowerMessage.includes('balance')) {
       const monthlyRate = customer.monthlyValue
       const months = Math.ceil(customer.balance / monthlyRate)
-      return `Good question! It's for your pest control service: $${monthlyRate}/month × ${months} months = $${customer.balance}. The last ${months} payment attempts didn't go through. Nothing shady - just want to keep you protected! Want me to break it down more, or shall we just get it sorted? Happy to set up a payment plan if needed!`
+      return `This is for your pest control service: $${monthlyRate}/month for ${months} months = $${customer.balance}. The last ${months} payments didn't process. I can set up a payment plan if that would help?`
     }
 
     // Default - options without pressure
-    return `Hey ${firstName}, I want to make this easy for you. Three options: (1) Update card and pay now, (2) Split payment in two, or (3) Set up a custom plan. No pressure - what works best for your situation? We're here to help! 😊`
+    return `${firstName}, I can help you with this. You can either update your card and pay now, split it into two payments, or we can set up a custom payment plan. What would work best for you?`
   }
 
   // Revenue Stream 4: Retention & Preventive Save
@@ -131,31 +131,31 @@ export class SalesBotEngine {
 
     // Initial outreach - proactive and specific
     if (!message || message === 'START_RETENTION') {
-      return `Hi ${firstName}! Quick check-in after ${customer.lastService.includes('10-28') ? 'yesterday\'s' : 'your recent'} service. Everything looking good? Any pests still hanging around? If so, I'll get you a FREE re-treatment within 24 hours - we guarantee it! 🏠`
+      return `Hi ${firstName}, this is Anna from PestCtrl. Just checking in after ${customer.lastService.includes('10-28') ? 'yesterday\'s' : 'your recent'} service. How did everything go? Any issues I should know about?`
     }
 
-    // Positive feedback - lock in loyalty
+    // Positive feedback - reinforce relationship
     if (lowerMessage.includes('yes') || lowerMessage.includes('great') || lowerMessage.includes('good') || lowerMessage.includes('perfect') || lowerMessage.includes('satisfied')) {
-      return `Awesome, ${firstName}! That's what we like to hear! Your next service is ${customer.nextService}. Pro tip: If you ever see ANYTHING between visits, text me immediately and we'll come back FREE. That's our guarantee! Have an amazing day! 😊`
+      return `Great to hear, ${firstName}! Your next service is scheduled for ${customer.nextService}. If you notice any pests between now and then, just let me know and we'll come back at no charge. That's our guarantee.`
     }
 
-    // Issue reported - IMMEDIATE action
+    // Issue reported - immediate action
     if (lowerMessage.includes('still seeing') || lowerMessage.includes('still') || lowerMessage.includes('problem') || lowerMessage.includes('ants') || lowerMessage.includes('bugs') || lowerMessage.includes('pests')) {
-      return `${firstName}, I'm SO sorry about that! This is unacceptable. I'm scheduling you for a FREE re-treatment tomorrow morning (or today if you prefer!). Our senior technician will focus on the ${lowerMessage.includes('kitchen') ? 'kitchen' : 'affected areas'} and use our industrial-strength treatment. We WILL get this handled. Plus, I'm crediting you 50% off next month. Sound good? 🔧`
+      return `I'm sorry to hear that, ${firstName}. I'll schedule a free re-treatment for you as soon as possible - tomorrow morning work for you? We'll focus on the ${lowerMessage.includes('kitchen') ? 'kitchen' : 'affected areas'} and make sure this gets resolved.`
     }
 
-    // Service quality concern - over-compensate
+    // Service quality concern - acknowledge and fix
     if (lowerMessage.includes('late') || lowerMessage.includes('time') || lowerMessage.includes('rushed') || lowerMessage.includes('didn\'t') || lowerMessage.includes('unprofessional')) {
-      return `${firstName}, I'm truly sorry about that experience. That's not the PestCtrl standard AT ALL. Here's what I'm doing: (1) Noting this in your file - guaranteed on-time service moving forward, (2) Giving you 30% off your next 2 months, (3) Assigning you our top-rated technician. We messed up, and I'm going to make it right. Fair? 🙏`
+      return `${firstName}, I apologize for that experience. That's not our standard. I'm noting this in your file to ensure on-time service going forward, and I'll credit your account 30% off the next two months. Would you like me to assign a specific technician to your account?`
     }
 
-    // Considering cancellation - find root cause
+    // Considering cancellation - understand and address
     if (lowerMessage.includes('cancel') || lowerMessage.includes('discontinue') || lowerMessage.includes('stop') || lowerMessage.includes('done')) {
-      return `${firstName}, I'm really sorry to hear that! Before you go, can I ask what's driving this? Is it the service, the price, or something else? I might be able to fix it right now. And honestly, if we messed up, I want to know so we can improve. Would you give me 2 minutes to try to make it right? 💚`
+      return `I'm sorry to hear that, ${firstName}. Can I ask what's prompting this decision? If it's something we can fix, I'd like to try. If not, I understand and want to make sure we part on good terms.`
     }
 
-    // Default - proactive problem solving
-    return `${firstName}, your satisfaction is EVERYTHING to us. If even the tiniest thing isn't perfect, tell me and I'll fix it immediately. We guarantee our work - you should NEVER see pests. Deal? 😊`
+    // Default - open for feedback
+    return `${firstName}, I want to make sure you're completely satisfied with our service. If there's anything that isn't meeting your expectations, please let me know so I can address it right away.`
   }
 
   // Main routing function
